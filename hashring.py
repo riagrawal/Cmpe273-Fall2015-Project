@@ -8,9 +8,9 @@ class ConsitentHashing(object):
         self._sorted_keys = []
         if nodes:
             for node in nodes:
-                self.add_node(node)
+                self.add_new_node(node)
 
-    def add_node(self, node):
+    def add_new_node(self, node):
         ##Addition of new node to the existing hash ring
         for i in xrange(0, self.replicas):
             key = self.get_hash('%s:%s' % (node, i))

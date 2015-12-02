@@ -31,16 +31,16 @@ if __name__ == "__main__":
     node_array =[]
     choice = "1"
     ##Adding initial 3 nodes i.e. servers at ports 6379, 6381 and 6383
-    ring.add_node(6379)
-    ring.add_node(6381)
-    ring.add_node(6383)
+    ring.add_new_node(6379)
+    ring.add_new_node(6381)
+    ring.add_new_node(6383)
     new_node_port = 6385
     node_array.append(6379)
     node_array.append(6381)
     node_array.append(6383)
 
     while(choice != "3"):
-        print "1.Set value"
+        print "\n1.Set value"
         print "2.Get value"
         print "3.Stop"
         choice = raw_input("Enter the choice: ")
@@ -79,7 +79,7 @@ if __name__ == "__main__":
 
                 if(i==4):
                     ##Add a new node as value of i is 4
-                    ring.add_node(new_node_port)
+                    ring.add_new_node(new_node_port)
                     print "\nNew node has been created at this point at port :",new_node_port,"\n"
 
                     ##Prints the summary of all the entries up until now
@@ -104,13 +104,20 @@ if __name__ == "__main__":
             print "\n*************Inside GET block****************\n"
             key = raw_input("Enter the value of key : ")
             hash_key = ring.get_hash(key)
+
+            ##This will look up in all the nodes for given key value pair and print it
             for j in range(len(node_array)):
                 POOL = redis.ConnectionPool( host="127.0.0.1",port= node_array[j] , db=0)
                 response = getVariable(hash_key)
                 if(response != None):
+                    response_port = node_array[j]
                     break
-            print "\nThe value for KEY :",key, " is :", response, "\n\n"   
+            print "KEY                            VALUE                        PORT" 
+            print "-----------------------------------------------------------------"   
+            print key,"                          ",response,"                       ",response_port    
+            #print "\nThe value for KEY ",key, " = ", response, "at port ",response_port,"\n\n"   
         else:
+            ##Exits the code
             print "\n*************Code Exit****************\n"
             break            
 
