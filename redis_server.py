@@ -16,6 +16,7 @@ def select_cluster(path,num_of_cluster,key):
     workbook = xlrd.open_workbook(path)
     address = [] 
     hash = int(key) % int(num_of_cluster)
+    print "Hash value for given input is ,", hash
     print "\n The cluster selected is : ", hash+1
     for sheet in workbook.sheets():
         for row in range(sheet.nrows):
