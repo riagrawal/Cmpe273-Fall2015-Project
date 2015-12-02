@@ -11,40 +11,33 @@ class ConsitentHashing(object):
                 self.add_node(node)
 
     def add_node(self, node):
-        """Adds a `node` to the hash ring (including a number of replicas).
-        """
+        ##Addition of new node to the existing hash ring
         for i in xrange(0, self.replicas):
-            key = self.get_key('%s:%s' % (node, i))
+            key = self.get_hash('%s:%s' % (node, i))
             self.ring[key] = node
             self._sorted_keys.append(key)
 
         self._sorted_keys.sort()
 
-    def remove_node(self, node):
-        """Removes `node` from the hash ring and its replicas.
-        """
+    def delete_node(self, node):
+        ##Removes node from hsah ring and all its replicas
         for i in xrange(0, self.replicas):
             key = self.get_key('%s:%s' % (node, i))
             del self.ring[key]
             self._sorted_keys.remove(key)
 
-    def get_node(self, string_key):
-        """Given a string key a corresponding node in the hash ring is returned.
+    def get_node_port(self, string_key):
+        ##Returns the corresponding node in hash ring
+        return self.get_node_position(string_key)[0]
 
-        If the hash ring is empty, `None` is returned.
-        """
-        return self.get_node_pos(string_key)[0]
-
-    def get_node_pos(self, string_key):
-        """Given a string key a corresponding node in the hash ring is returned
-        along with it's position in the ring.
-
-        If the hash ring is empty, (`None`, `None`) is returned.
-        """
+    def get_node_position(self, string_key):
+        ##For a given key , this function returns the corresponding node in hash ring
+        ##with its position in the hash ring
+        ## it returns NULL if hash ring is empty
         if not self.ring:
             return None, None
 
-        key = self.get_key(string_key)
+        key = self.get_hash(string_key)
 
         nodes = self._sorted_keys
         for i in xrange(0, len(nodes)):
@@ -54,12 +47,8 @@ class ConsitentHashing(object):
 
         return self.ring[nodes[0]], 0
 
-    def get_nodes(self, string_key):
-        """Given a string key it returns the nodes as a generator that can hold the key.
-
-        The generator is never ending and iterates through the ring
-        starting at the correct position.
-        """
+    def get_all_nodes(self, string_key):
+        ##This function returns the node selected to hold the hash key value pair
         if not self.ring:
             yield None, None
 
@@ -71,12 +60,9 @@ class ConsitentHashing(object):
             for key in self._sorted_keys:
                 yield self.ring[key]
 
-    def get_key(self, key):
-        """Given a string key it returns a long value,
-        this long value represents a place on the hash ring.
-
-        md5 is currently used because it mixes well.
-        """
+    def get_hash(self, key):
+        ##Given input key , this function returns a long value that tells the position of node on hash ring
+        ## We used MD5 for better and non-conflicting results
         m = md5.new()
         m.update(key)
         return long(m.hexdigest(), 16)
