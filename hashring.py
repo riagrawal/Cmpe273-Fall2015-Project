@@ -20,7 +20,7 @@ class ConsitentHashing(object):
         self._sorted_keys.sort()
 
     def delete_node(self, node):
-        ##Removes node from hsah ring and all its replicas
+        ##Removes node from hash ring and all its replicas
         for i in xrange(0, self.replicas):
             key = self.get_key('%s:%s' % (node, i))
             del self.ring[key]

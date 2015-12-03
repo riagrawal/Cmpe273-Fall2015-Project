@@ -10,14 +10,16 @@ class ServerNode(object):
         self._port = port
     
     def getPort(self):
-        "Returns the server port"
+        ##This returns the server port
         return self._port
 
+##This method hets the key value pair
 def getVariable(variable_name):
     my_server = redis.Redis(connection_pool=POOL)
     response = my_server.get(variable_name)
     return response
 
+##This method sets the  hash key value pair to redis node
 def setVariable(variable_name, variable_value):
     my_server = redis.Redis(connection_pool=POOL)
     my_server.set(variable_name, variable_value)
@@ -40,6 +42,7 @@ if __name__ == "__main__":
     node_array.append(6383)
 
     while(choice != "3"):
+        ##Displays the options for user
         print "\n1.Set value"
         print "2.Get value"
         print "3.Stop"
@@ -101,6 +104,7 @@ if __name__ == "__main__":
             for j in range(len(hash_array)):
                 print "Key = ",key_array[j], " hash value = ",hash_array[j],"port = ",port_array[j]
         elif (choice == "2"):
+            ##This block will get the value for given key from user
             print "\n*************Inside GET block****************\n"
             key = raw_input("Enter the value of key : ")
             hash_key = ring.get_hash(key)
@@ -112,10 +116,10 @@ if __name__ == "__main__":
                 if(response != None):
                     response_port = node_array[j]
                     break
+            ##Prints the key value pair        
             print "KEY                            VALUE                        PORT" 
             print "-----------------------------------------------------------------"   
-            print key,"                          ",response,"                       ",response_port    
-            #print "\nThe value for KEY ",key, " = ", response, "at port ",response_port,"\n\n"   
+            print key,"                          ",response,"                       ",response_port       
         else:
             ##Exits the code
             print "\n*************Code Exit****************\n"
